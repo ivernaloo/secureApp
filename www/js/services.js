@@ -1,50 +1,67 @@
-angular.module('starter.services', [])
-
-.factory('Chats', function() {
-  // Might use a resource here that returns a JSON array
-
-  // Some fake testing data
-  var chats = [{
-    id: 0,
-    name: 'Ben Sparrow',
-    lastText: 'You on your way?',
-    face: 'img/ben.png'
-  }, {
-    id: 1,
-    name: 'Max Lynx',
-    lastText: 'Hey, it\'s me',
-    face: 'img/max.png'
-  }, {
-    id: 2,
-    name: 'Adam Bradleyson',
-    lastText: 'I should buy a boat',
-    face: 'img/adam.jpg'
-  }, {
-    id: 3,
-    name: 'Perry Governor',
-    lastText: 'Look at my mukluks!',
-    face: 'img/perry.png'
-  }, {
-    id: 4,
-    name: 'Mike Harrington',
-    lastText: 'This is wicked good ice cream.',
-    face: 'img/mike.png'
-  }];
-
-  return {
-    all: function() {
-      return chats;
+angular.module('secureApp.services', ['ionic', 'secureApp.services'])
+.factory('AuthFactory', function($scope, $timeout) {
+  var validUsers = [
+    {
+      firstName: 'Johanna',
+      lastName: 'Doe',
+      username: 'johnny',
+      password: 'dolphin'
     },
-    remove: function(chat) {
-      chats.splice(chats.indexOf(chat), 1);
+    {
+      firstName: 'Jane',
+      lastName: 'Doe',
+      username: 'zo1337',
+      password: 'monkey'
     },
-    get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
-        }
-      }
-      return null;
+    {
+      firstName: 'Mary',
+      lastName: 'Doe',
+      username: 'bl00dy',
+      password: 'fish'
     }
+  ];
+
+  var currentUser = null; // 当前用户
+  var login = function (username, password) {
+    var deferred = $q.defer(); // promise library
+    // We use timeout in order to simulate a roundtrip to a server,
+    // which will be present in any realistic authenitcation scenario.
+    $timeout(function(){
+      // Clear any existin, cached user data before logging in
+      currentUser = null; // 正在登录的user g
+      // See if we can find amatching username-password match
+      validUsers.forEach(function(user){
+        // 遍历所有的用户数据来比对
+        if (user.username === username && user.password === password){
+          // If we have a match, cache it as the current user
+          currentUser = user;
+          deferred.resolve();
+        }
+      });
+      // If no match could be found, reject the promise
+      if (!currentUser){
+        deferred.reject(); // reject the promise means failture in these logic
+      }
+    }, 1000);
+    // Retrurn the promise to the caller
+    return deferred.promise; // return the promise status
   };
+
+  // login status judgement
+  var isAuthenticated = function () {
+    return currentUser ? true : false;
+  };
+
+  // current login status
+  var getCurrent = function () {
+    return isAUthenticated() ? currentUser : null;
+  };
+
+  // expose to the global environment
+  return {
+    login: login,
+    isAuthenticated: isAuthenticated,
+    getCurrent: getCurrent
+  }
 });
+
