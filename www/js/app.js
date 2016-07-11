@@ -1,75 +1,65 @@
-// Ionic Starter App
+angular.module('secureApp',
+  [
+    'ionic',
+    'secureApp.services',
+    'secureApp.controllers'
+  ])
 
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-// 'starter.services' is found in services.js
-// 'starter.controllers' is found in controllers.js
-angular.module('secureApp', ['ionic','secureApp.services','secureApp.controllers']) // 引用了对应的模块
-
-.run(function($ionicPlatform) {
-  $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
-    if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-      // cordova.plugins.Keyboard.disableScroll(true);
-    }
-    if (window.StatusBar) {
-      // org.apache.cordova.statusbar required
-      StatusBar.styleDefault();
-    }
-  });
-})
-
-.config(function($stateProvider, $urlRouterProvider) {
-
-  // Ionic uses AngularUI Router which uses the concept of states
-  // Learn more here: https://github.com/angular-ui/ui-router
-  // Set up the various states which the app can be in.
-  // Each state's controller can be found in controllers.js
-  $stateProvider
-  // setup an abstract state for the tabs directive
-    .state('app', {
-    url: '/app',
-    abstract: true, // 绝对地址，用来隐藏url里面的链接
-    templateUrl: 'templates/menu.html'
-  })
-
-  // Each tab has its own nav history stack:
-
-  .state('app.home', {
-    url: '/home',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/home.html'
+  .run(function ($ionicPlatform) {
+    $ionicPlatform.ready(function () {
+      // Hide the accessory bar by default (remove this to show
+      // the accessory bar above the keyboard for form inputs)
+      if (window.cordova && window.cordova.plugins.Keyboard) {
+        cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       }
-    }
+      if (window.StatusBar) {
+        // org.apache.cordova.statusbar required
+        StatusBar.styleDefault();
+      }
+    });
   })
 
-  .state('app.private', {
-      url: '/private',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/private.html',
-          resolve: {
-            isAuthenticated: function($q, AuthFactory){
-              if (AuthFactory.isAuthenticated()){
-                return $q.when();
-              } else {
-                $timeout(function(){
-                  $state.go('app.home')
-                }, 0);
-                return $q.reject();
+  .config(function ($stateProvider, $urlRouterProvider) {
+    $stateProvider
+      .state('app', {
+        url: "/app",
+        abstract: true,
+        templateUrl: "templates/menu.html",
+        controller: 'AppCtrl'
+      })
+      .state('app.home', {
+        url: "/home",
+        views: {
+          'menuContent': {
+            templateUrl: "templates/home.html"
+          }
+        }
+      })
+      .state('app.private', {
+        url: "/private",
+        views: {
+          'menuContent': {
+            templateUrl: "templates/private.html",
+            resolve: {
+              isAuthenticated: function ($q) {
+                console.log("right");
+
+                console.log("right");
+                if (AuthFactory.isAuthenticated()) {
+                  console.log("here ok")
+                  return $q.when();
+                } else {
+                  console.log("here no")
+                  $timeout(function () {
+                    $state.go('app.home')
+                  }, 0);
+                  return $q.reject()
+                }
               }
             }
           }
         }
-      }
-    });
-
-
-  // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/home');
-
-});
+      });
+    // if none of the above states are matched, use this as the fallback
+    $urlRouterProvider.otherwise('/app/home');
+  });
