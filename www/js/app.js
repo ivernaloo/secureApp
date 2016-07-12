@@ -41,15 +41,15 @@ angular.module('secureApp',
           'menuContent': {
             templateUrl: "templates/private.html",
             resolve: {
-              isAuthenticated: function ($q) {
-                console.log("right");
-
-                console.log("right");
+              isAuthenticated: function ($q, AuthFactory) {
+                console.info("isAuthenticated");
+                console.info("controllers :", $stateProvider);
+                console.info("debug :", AuthFactory);
                 if (AuthFactory.isAuthenticated()) {
-                  console.log("here ok")
+                  console.log("pass");
                   return $q.when();
                 } else {
-                  console.log("here no")
+                  console.log("failure");
                   $timeout(function () {
                     $state.go('app.home')
                   }, 0);

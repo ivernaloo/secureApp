@@ -1,4 +1,5 @@
-angular.module('secureApp.services', []).factory('AuthFactory', function($scope, $timeout) {
+angular.module('secureApp.services', [])
+  .factory('AuthFactory', function($scope, $timeout) {
 
     var validUsers = [
       {

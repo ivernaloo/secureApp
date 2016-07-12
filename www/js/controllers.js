@@ -1,6 +1,5 @@
 angular.module('secureApp.controllers', ['secureApp.services'])
-   .controller('AppCtrl', function ($scope, $ionicModal, $timeout) { // remove AuthFactory parameter here
-
+   .controller('AppCtrl', function ($scope, $ionicModal) { // remove AuthFactory parameter here
     // Form data for the login modal
     $scope.loginData = {};
 
